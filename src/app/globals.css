@@ -1,26 +1,163 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* Design tokens from the Stitch design system "Autumn Solace" (project "Woman Day"). */
+@theme {
+  --color-ivory: #fff9f2;
+  --color-cream: #f5e8d8;
+  --color-dusty-pink: #d9a6a0;
+  --color-rose: #c98287;
+  --color-muted-red: #a84c4a;
+  --color-muted-red-hover: #943f3d;
+  --color-warm-brown: #765343;
+  --color-dark-brown: #382a27;
+  --color-charcoal: #333039;
+  --color-sage: #8e9a72;
+
+  --text-display: 3.5rem;
+  --text-display--line-height: 4rem;
+  --text-display--letter-spacing: -0.02em;
+  --text-display-mobile: 2.25rem;
+  --text-display-mobile--line-height: 2.75rem;
+  --text-display-mobile--letter-spacing: -0.01em;
+  --text-headline-lg: 2.5rem;
+  --text-headline-lg--line-height: 3rem;
+  --text-headline-lg--letter-spacing: -0.015em;
+  --text-headline-lg-mobile: 1.75rem;
+  --text-headline-lg-mobile--line-height: 2.25rem;
+  --text-headline-md: 1.75rem;
+  --text-headline-md--line-height: 2.25rem;
+  --text-headline-sm: 1.375rem;
+  --text-headline-sm--line-height: 1.875rem;
+  --text-subhead: 1.125rem;
+  --text-subhead--line-height: 1.625rem;
+  --text-subhead--letter-spacing: 0.02em;
+  --text-body-lg: 1.0625rem;
+  --text-body-lg--line-height: 1.75rem;
+  --text-body-lg--letter-spacing: -0.01em;
+  --text-body-md: 0.9375rem;
+  --text-body-md--line-height: 1.5rem;
+  --text-body-sm: 0.8125rem;
+  --text-body-sm--line-height: 1.25rem;
+  --text-body-sm--letter-spacing: 0.01em;
+  --text-label-md: 0.875rem;
+  --text-label-md--line-height: 1.25rem;
+  --text-label-md--letter-spacing: 0.02em;
+  --text-label-sm: 0.6875rem;
+  --text-label-sm--line-height: 1rem;
+  --text-label-sm--letter-spacing: 0.08em;
+
+  --shadow-paper:
+    0 12px 32px -4px rgb(56 42 39 / 0.06), 0 4px 12px -2px rgb(118 83 67 / 0.04);
+  --shadow-paper-lg:
+    0 24px 48px -12px rgb(56 42 39 / 0.14),
+    0 8px 20px -6px rgb(118 83 67 / 0.08);
+
+  --ease-gentle: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-eb-garamond), "EB Garamond", serif;
+  --font-body: var(--font-be-vietnam-pro), "Be Vietnam Pro", sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
+  }
+
+  body {
+    background-color: var(--color-ivory);
+    color: var(--color-dark-brown);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background-color: rgb(217 166 160 / 0.45);
+    color: var(--color-dark-brown);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-muted-red);
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Hero copy entrance — pure CSS so it never depends on JavaScript. */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.fade-up {
+  animation: fade-up 0.9s var(--ease-gentle) both;
+  animation-delay: var(--delay, 0ms);
+}
+
+/* Falling cherry-blossom petals (see PetalLayer). */
+@keyframes petal-fall {
+  0% {
+    transform: translate3d(0, -12vh, 0);
+    opacity: 0;
+  }
+  8% {
+    opacity: var(--petal-opacity, 0.8);
+  }
+  88% {
+    opacity: var(--petal-opacity, 0.8);
+  }
+  100% {
+    transform: translate3d(var(--petal-drift, 0px), 108vh, 0);
+    opacity: 0;
+  }
+}
+
+@keyframes petal-sway {
+  0%,
+  100% {
+    transform: translateX(0) rotate(0deg) rotateY(0deg);
+  }
+  50% {
+    transform: translateX(var(--petal-sway, 24px))
+      rotate(var(--petal-spin, 120deg)) rotateY(55deg);
+  }
+}
+
+.petal {
+  animation: petal-fall var(--petal-duration, 14s) linear infinite;
+  animation-delay: var(--petal-delay, 0s);
+  will-change: transform, opacity;
+}
+
+.petal > span {
+  display: block;
+  animation: petal-sway var(--petal-sway-duration, 4s) ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-up {
+    animation: none;
+  }
+
+  .petal-layer {
+    display: none;
+  }
+}
+
+/* Soft paper grain used on letter and cards. */
+.paper-grain {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.46 0 0 0 0 0.33 0 0 0 0 0.26 0 0 0 0.07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
